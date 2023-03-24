@@ -1,0 +1,45 @@
+# 使用HTTP/2，需要Nginx1.9.7以上版本
+# ssl on;
+
+# SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
+# error_page 404/404.html;
+
+# SSL证书文件位置
+ssl_certificate /etc/nginx/ssl/[证书文件名].crt;
+ssl_certificate_key /etc/nginx/ssl/[私钥文件名].key;
+
+# DH-Key交换密钥文件位置
+ssl_dhparam /etc/nginx/ssl/[交换密钥文件名].pem;
+
+# SSL优化配置
+# 只允许TLS协议
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+# ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+# 加密套件
+# ssl_ciphers HIGH:!aNULL:!MD5;
+ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+# 由服务器协商最佳的加密算法
+ssl_prefer_server_ciphers on;
+
+ssl_ecdh_curve secp384r1;
+# Session Cache
+ssl_session_cache shared:SSL:10m;
+# 关闭浏览器的Session Ticket缓存
+ssl_session_tickets off;
+
+# ssl_stapling on;
+# ssl_stapling_verify on;
+# ssl_trusted_certificate /etc/nginx/ssl;
+
+resolver 8.8.8.8 8.8.4.4 valid=300s;
+resolver_timeout 5s;
+
+# 开启HSTS，并设置有效期为“6307200秒”（6个月），包括子域名(根据情况可删掉)，预加载到浏览器缓存(根据情况可删掉)
+# add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";
+
+# 页面可在相同域名页面的frame中展示
+# add_header X-Frame-Options DENY;
+add_header X-Frame-Options SAMEORIGIN;
+# 禁用内容嗅探
+add_header X-Content-Type-Options nosniff;
